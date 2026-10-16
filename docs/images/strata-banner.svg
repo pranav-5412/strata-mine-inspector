@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="440" viewBox="0 0 1440 440" role="img" aria-labelledby="title description">
+  <title id="title">STRATA — Mine Boundary Inspector</title>
+  <desc id="description">STRATA project banner with abstract terraced mine contours. See the change. Inspect the evidence.</desc>
+  <defs>
+    <linearGradient id="background" x2="1" y2="1"><stop stop-color="#142c27"/><stop offset="1" stop-color="#28463b"/></linearGradient>
+    <linearGradient id="contour" x2="0" y2="1"><stop stop-color="#d2be8d"/><stop offset="1" stop-color="#6a8873"/></linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#aec2a6" stroke-opacity=".055"/></pattern>
+    <clipPath id="clip"><rect width="1440" height="440" rx="18"/></clipPath>
+  </defs>
+  <g clip-path="url(#clip)">
+    <rect width="1440" height="440" fill="url(#background)"/>
+    <rect width="1440" height="440" fill="url(#grid)"/>
+    <path d="M76 82H126" stroke="#d2be8d" stroke-width="3"/>
+    <g font-family="Segoe UI,Arial,sans-serif">
+      <text x="76" y="124" font-size="13" fill="#afc0a4" letter-spacing="3">SPATIAL INSPECTION WORKSPACE</text>
+      <text x="70" y="236" font-size="102" font-weight="600" fill="#edf0df" letter-spacing="7">STRATA</text>
+      <text x="76" y="286" font-size="27" fill="#d5dfc9">See the change. Inspect the evidence.</text>
+      <text x="76" y="354" font-size="14" fill="#9fb39b" letter-spacing="1">3D TERRAIN  /  SURVEY COMPARISON  /  INSPECTION REPORTS</text>
+    </g>
+    <g transform="translate(1070 218) rotate(-12)" fill="none" stroke="url(#contour)" stroke-width="1.5">
+      <path d="M-331-41C-297-152-88-177 118-120C332-63 361 51 207 125C61 195-181 144-285 72C-319 48-346 7-331-41Z" opacity=".32"/>
+      <path d="M-290-35C-258-131-78-151 104-103C289-54 310 45 180 108C54 168-157 125-248 63C-278 42-302 6-290-35Z" opacity=".4"/>
+      <path d="M-250-29C-222-110-65-129 88-88C246-45 266 37 153 91C45 142-135 105-212 53C-238 35-260 4-250-29Z" opacity=".5"/>
+      <path d="M-210-24C-186-92-55-108 73-73C206-38 224 30 129 76C38 119-113 88-178 44C-200 29-217 3-210-24Z" opacity=".62"/>
+      <path d="M-170-19C-150-74-43-86 59-59C165-31 181 25 104 62C31 97-92 71-144 36C-161 24-176 2-170-19Z" opacity=".74"/>
+      <path d="M-130-15C-114-57-33-66 45-45C127-24 139 19 80 47C24 73-70 55-110 27C-123 18-135 2-130-15Z" opacity=".85"/>
+      <path d="M-90-10C-80-40-23-46 31-31C88-16 96 13 55 33C16 51-48 38-76 19C-85 12-93 1-90-10Z"/>
+      <path d="M-355-104L151-170L350 80L-65 184L-355-104Z" stroke="#dfc68a" stroke-dasharray="9 8" stroke-opacity=".45"/>
+      <circle cx="211" cy="65" r="8" fill="#d4a36e" stroke="none"/>
+      <circle cx="211" cy="65" r="18" stroke="#d4a36e" stroke-opacity=".5"/>
+    </g>
+    <path d="M76 402H1364" stroke="#82967d" stroke-opacity=".2"/>
+  </g>
+</svg>
