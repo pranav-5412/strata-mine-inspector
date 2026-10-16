@@ -1,3 +1,4 @@
+import { palette } from "./palette";
 import { sectionProfile, site, number } from "./model";
 import type { Point } from "./model";
 export default function SectionChart({ points }: { points: [Point, Point] }) {
@@ -45,8 +46,8 @@ export default function SectionChart({ points }: { points: [Point, Point] }) {
       >
         <defs>
           <linearGradient id="section-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#63b3aa" stopOpacity=".2" />
-            <stop offset="100%" stopColor="#63b3aa" stopOpacity="0" />
+            <stop offset="0%" stopColor={palette.analysis} stopOpacity=".2" />
+            <stop offset="100%" stopColor={palette.analysis} stopOpacity="0" />
           </linearGradient>
         </defs>
         {[0, 1, 2, 3].map((i) => {
@@ -58,7 +59,7 @@ export default function SectionChart({ points }: { points: [Point, Point] }) {
                 x2="740"
                 y1={y(value)}
                 y2={y(value)}
-                stroke="#314845"
+                stroke={palette.grid}
               />
               <text x="50" y={y(value) + 4} textAnchor="end">
                 {number(value)}
@@ -75,20 +76,20 @@ export default function SectionChart({ points }: { points: [Point, Point] }) {
           x2="740"
           y1={y(site.permittedElevation)}
           y2={y(site.permittedElevation)}
-          stroke="#e7b868"
+          stroke={palette.boundary}
           strokeDasharray="6 5"
         />
         <path
           d={path("baseline")}
           fill="none"
-          stroke="#879b98"
+          stroke={palette.baseline}
           strokeWidth="2"
           strokeDasharray="4 4"
         />
         <path
           d={path("latest")}
           fill="none"
-          stroke="#85d1c6"
+          stroke={palette.analysis}
           strokeWidth="2.5"
         />
         {[0, 0.25, 0.5, 0.75, 1].map((t) => (

@@ -27,6 +27,8 @@ Explore a terraced mine, compare two surveys, inspect footprint and depth exceed
 
 Built for government mining inspectors and officials as a **TechnoXian NRC innovation project in Noida, India**.
 
+![STRATA overview in the Graphite, Limestone and Amber palette](docs/images/strata-overview.png)
+
 ![Working STRATA explorer with rock benches, exterior soil and gravel, and inspection evidence](docs/images/strata-exterior-ground.png)
 
 <p align="center"><em>Actual application screenshot · generated mine geometry · calculated inspection findings</em></p>

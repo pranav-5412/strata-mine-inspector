@@ -22,7 +22,6 @@ import {
   Check,
   AlertTriangle,
   SlidersHorizontal,
-  Activity,
 } from "lucide-react";
 import { analyze, site, number, sample } from "./model";
 import type { Point, Finding, SurveyKey } from "./model";
@@ -204,6 +203,7 @@ export default function App() {
             <button
               key={item.id}
               className={page === item.id ? "nav-item active" : "nav-item"}
+              aria-current={page === item.id ? "page" : undefined}
               onClick={() => setPage(item.id)}
             >
               <item.icon size={18} />
@@ -231,7 +231,7 @@ export default function App() {
           <div className="inspector">
             <span>SI</span>
             <div>
-              Site inspector<small>Inspection workspace</small>
+              Local inspection<small>Notes stored on this device</small>
             </div>
             <ShieldCheck size={17} />
           </div>
@@ -244,22 +244,19 @@ export default function App() {
           </div>
           <div className="topbar-right">
             <span className="site-code">SITE / {site.id}</span>
-            <span className="avatar">SI</span>
+            <span className="session-label">LOCAL SESSION</span>
           </div>
         </header>
         {page === "overview" && (
           <main className="overview page">
             <div className="page-heading">
               <div>
-                <span className="eyebrow">SITE INTELLIGENCE / 01</span>
-                <h1>
-                  A clearer view.
-                  <br />
-                  <span>A more focused inspection.</span>
-                </h1>
+                <span className="eyebrow">
+                  INSPECTION WORKSPACE / {site.id}
+                </span>
+                <h1>Site overview</h1>
                 <p>
-                  Review excavation changes and the areas that need your
-                  attention.
+                  Aravalli Open-Pit · Survey comparison and excavation review
                 </p>
               </div>
               <button
@@ -322,8 +319,8 @@ export default function App() {
               <section className="terrain-card">
                 <div className="panel-heading">
                   <div>
-                    <span className="eyebrow">SPATIAL OVERVIEW</span>
-                    <h2>See the whole picture.</h2>
+                    <span className="eyebrow">TERRAIN / SURVEY B</span>
+                    <h2>Excavation model</h2>
                   </div>
                   <span className="small muted">3D site model</span>
                 </div>
@@ -337,7 +334,7 @@ export default function App() {
                     <span>LOCAL GRID · METRES</span>
                   </div>
                   <div className="preview-caption">
-                    <span>Aravalli / Excavation terrain</span>
+                    <span>Perspective view · 4 m surface grid</span>
                     <button
                       className="button light"
                       onClick={() => {
@@ -365,13 +362,14 @@ export default function App() {
               <section className="priority-card">
                 <div className="panel-heading">
                   <div>
-                    <span className="eyebrow">PRIORITY REVIEW</span>
-                    <h2>Areas to inspect</h2>
+                    <span className="eyebrow">REQUIRES REVIEW</span>
+                    <h2>Inspection queue</h2>
                   </div>
                   <span className="count-pill">{findings.length}</span>
                 </div>
                 <p className="panel-description">
-                  Calculated from the selected survey and configured limits.
+                  Survey B checked against the permitted footprint and
+                  elevation.
                 </p>
                 <div className="priority-list">
                   {findings.map((f) => (
@@ -393,7 +391,12 @@ export default function App() {
                         {f.kind === "depth" ? "exceedance" : "excavation depth"}
                       </p>
                       <div className="finding-bottom">
-                        <span>{reviews[f.id]?.status || "Unreviewed"}</span>
+                        <span
+                          className="review-status"
+                          data-status={reviews[f.id]?.status || "Unreviewed"}
+                        >
+                          {reviews[f.id]?.status || "Unreviewed"}
+                        </span>
                         <ArrowUpRight size={17} />
                       </div>
                     </button>
@@ -403,28 +406,58 @@ export default function App() {
                   className="text-button"
                   onClick={() => setPage("findings")}
                 >
-                  View inspection findings <ArrowRight size={16} />
+                  Open finding register <ArrowRight size={16} />
                 </button>
+                <div className="survey-register">
+                  <div className="eyebrow">SURVEY REGISTER</div>
+                  {(["baseline", "latest"] as const).map((key) => (
+                    <button
+                      key={key}
+                      onClick={() => {
+                        setPage("explorer");
+                        setCurrentSurvey(key);
+                        setLayer("natural");
+                        setSelected(null);
+                        setSection(null);
+                      }}
+                    >
+                      <span className="survey-letter">
+                        {key === "baseline" ? "A" : "B"}
+                      </span>
+                      <span>
+                        <strong>
+                          {key === "baseline"
+                            ? "Baseline surface"
+                            : "Latest surface"}
+                        </strong>
+                        <small>
+                          {key === "baseline"
+                            ? "15 September 2026"
+                            : "15 October 2026"}
+                        </small>
+                      </span>
+                      <ArrowUpRight size={16} />
+                    </button>
+                  ))}
+                </div>
               </section>
             </div>
-            <section className="workflow">
-              <div className="workflow-title">
-                <Activity size={19} />
-                <div>
-                  <strong>From a change to a clear finding.</strong>
-                  <span>One connected inspection workflow.</span>
-                </div>
+            <section className="survey-summary" aria-label="Survey parameters">
+              <div>
+                <span>Coordinate reference</span>
+                <strong>Local engineering grid</strong>
               </div>
-              <div className="workflow-step">
-                <span>01</span>Compare surveys
+              <div>
+                <span>Surface spacing</span>
+                <strong>4 m</strong>
               </div>
-              <ChevronRight size={16} />
-              <div className="workflow-step">
-                <span>02</span>Inspect the geometry
+              <div>
+                <span>Vertical tolerance</span>
+                <strong>2 m</strong>
               </div>
-              <ChevronRight size={16} />
-              <div className="workflow-step">
-                <span>03</span>Record the evidence
+              <div>
+                <span>Permitted elevation</span>
+                <strong>−155 m</strong>
               </div>
             </section>
           </main>
@@ -477,6 +510,7 @@ export default function App() {
                     {(["natural", "change", "depth"] as const).map((l) => (
                       <button
                         className={layer === l ? "selected" : ""}
+                        aria-pressed={layer === l}
                         key={l}
                         onClick={() => setLayer(l)}
                       >
@@ -522,6 +556,7 @@ export default function App() {
                     <button
                       key={t.id}
                       className={tool === t.id ? "selected" : ""}
+                      aria-pressed={tool === t.id}
                       onClick={() => {
                         setTool(t.id);
                         setSectionStart(null);
@@ -674,6 +709,10 @@ export default function App() {
                     <label className="field-label">
                       Review status
                       <select
+                        className="review-status"
+                        data-status={
+                          reviews[finding.id]?.status || "Unreviewed"
+                        }
                         value={reviews[finding.id]?.status || "Unreviewed"}
                         onChange={(e) =>
                           saveReview(finding.id, { status: e.target.value })
@@ -754,11 +793,7 @@ export default function App() {
             <div className="page-heading">
               <div>
                 <span className="eyebrow">INSPECTION REGISTER</span>
-                <h1>
-                  Every finding.
-                  <br />
-                  <span>Evidence attached.</span>
-                </h1>
+                <h1>Inspection findings</h1>
                 <p>
                   Review the location, geometry, and status of calculated
                   exceedances.
@@ -820,6 +855,8 @@ export default function App() {
                       <td>
                         <select
                           aria-label={`Status for ${f.id}`}
+                          className="review-status"
+                          data-status={reviews[f.id]?.status || "Unreviewed"}
                           value={reviews[f.id]?.status || "Unreviewed"}
                           onChange={(e) =>
                             saveReview(f.id, { status: e.target.value })
@@ -861,11 +898,7 @@ export default function App() {
             <div className="page-heading">
               <div>
                 <span className="eyebrow">INSPECTION EVIDENCE</span>
-                <h1>
-                  From the terrain
-                  <br />
-                  <span>to the record.</span>
-                </h1>
+                <h1>Inspection reports</h1>
                 <p>
                   Export a dated inspection report with calculations and your
                   review notes.
@@ -893,7 +926,7 @@ export default function App() {
                 </span>
               </section>
               <section className="report-options">
-                <h2>An accountable inspection record.</h2>
+                <h2>Export the inspection record</h2>
                 <p>
                   The PDF includes survey references, calculation methods,
                   affected areas, peak measurements, review decisions, and

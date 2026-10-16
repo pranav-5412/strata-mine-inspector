@@ -1,7 +1,14 @@
+import { palette } from "./palette";
 import { useMemo, useEffect, useRef, useState, Component } from "react";
 import type { ReactNode, ElementRef } from "react";
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
-import { OrbitControls, Line, Html, useTexture } from "@react-three/drei";
+import {
+  OrbitControls,
+  Line,
+  Html,
+  useTexture,
+  useProgress,
+} from "@react-three/drei";
 import * as THREE from "three";
 import { site, gridPoint, sample, inside, pitRadius } from "./model";
 import type { Point, SurveyKey } from "./model";
@@ -263,8 +270,8 @@ function Scene(props: SceneProps & { onStats: (s: string) => void }) {
   );
   return (
     <>
-      <color attach="background" args={["#202e2a"]} />
-      <fog attach="fog" args={["#202e2a", 4500, 8500]} />
+      <color attach="background" args={[palette.graphite]} />
+      <fog attach="fog" args={[palette.graphite, 4500, 8500]} />
       <ambientLight intensity={0.65} />
       <hemisphereLight args={["#d3e0e7", "#655b40", 0.85]} />
       <directionalLight
@@ -288,7 +295,7 @@ function Scene(props: SceneProps & { onStats: (s: string) => void }) {
       {props.boundary && (
         <Line
           points={boundaryPoints}
-          color="#e6bd6c"
+          color={palette.boundary}
           lineWidth={2}
           dashed
           dashSize={22}
@@ -302,7 +309,7 @@ function Scene(props: SceneProps & { onStats: (s: string) => void }) {
         >
           <circleGeometry args={[440, 80]} />
           <meshBasicMaterial
-            color="#57b8b2"
+            color={palette.analysis}
             transparent
             opacity={0.28}
             depthWrite={false}
@@ -311,7 +318,7 @@ function Scene(props: SceneProps & { onStats: (s: string) => void }) {
         </mesh>
       )}
       {sectionPoints && (
-        <Line points={sectionPoints} color="#91d8db" lineWidth={3} />
+        <Line points={sectionPoints} color={palette.analysis} lineWidth={3} />
       )}
       {props.selected && (
         <group
@@ -323,7 +330,17 @@ function Scene(props: SceneProps & { onStats: (s: string) => void }) {
         >
           <mesh rotation={[-Math.PI / 2, 0, 0]}>
             <ringGeometry args={[12, 18, 32]} />
-            <meshBasicMaterial color="#f3e3af" side={THREE.DoubleSide} />
+            <meshBasicMaterial
+              color={palette.selection}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.2, 0]}>
+            <ringGeometry args={[10, 21, 32]} />
+            <meshBasicMaterial
+              color={palette.graphite}
+              side={THREE.DoubleSide}
+            />
           </mesh>
           <Html center position={[0, 40, 0]}>
             <div className="point-label">Inspection point</div>
@@ -366,6 +383,7 @@ class SceneBoundary extends Component<
   }
 }
 export default function MineScene(props: SceneProps) {
+  const { active: loading, progress } = useProgress();
   const [error, setError] = useState(false),
     [stats, setStats] = useState("");
   return (
@@ -402,6 +420,12 @@ export default function MineScene(props: SceneProps) {
           >
             <Scene {...props} onStats={setStats} />
           </Canvas>
+        )}
+        {loading && !error && (
+          <div className="model-loading" role="status">
+            <span>Loading terrain and materials</span>
+            <strong>{Math.round(progress)}%</strong>
+          </div>
         )}
         {!props.compact && (
           <div className="render-stats" aria-label="Renderer performance">

@@ -38,7 +38,7 @@ export function exportReport(
       y += 6;
     }
   };
-  doc.setTextColor(25, 55, 48);
+  doc.setTextColor(37, 40, 36);
   line("STRATA / MINE INSPECTION", 19);
   y += 4;
   line(`${site.name} | ${site.id}`, 13);
@@ -74,7 +74,7 @@ export function exportReport(
     );
   for (const finding of findings) {
     ensure(55);
-    doc.setTextColor(25, 55, 48);
+    doc.setTextColor(37, 40, 36);
     line(`${finding.id} / ${finding.title}`, 12);
     doc.setTextColor(45);
     line(
