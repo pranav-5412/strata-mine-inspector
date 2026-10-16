@@ -186,15 +186,7 @@ h3 {
   margin-top: auto;
   padding-top: 35px;
 }
-.local-status {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  color: var(--on-dark);
-  font-size: 11px;
-  padding: 0 10px;
-}
-.local-status span,
+
 .survey-badge > span,
 .live-dot {
   display: inline-block;
@@ -220,27 +212,7 @@ h3 {
   margin: 24px 10px;
   padding: 0;
 }
-.inspector {
-  border-top: 1px solid var(--dark-line);
-  padding: 20px 4px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  font-size: 12px;
-}
-.inspector > span {
-  display: none;
-}
-.inspector small {
-  display: block;
-  color: var(--muted);
-  font-size: 10px;
-  margin-top: 5px;
-}
-.inspector > svg {
-  margin-left: auto;
-  color: var(--muted);
-}
+
 .workspace {
   flex: 1;
   min-width: 0;
@@ -469,45 +441,11 @@ h3 {
   background: var(--nav);
   position: relative;
 }
-.terrain-preview-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  position: absolute;
-  left: 20px;
-  right: 20px;
-  top: 18px;
-  pointer-events: none;
-  color: var(--on-dark);
-  font: 9px var(--mono);
-  letter-spacing: 0.6px;
-}
-.terrain-preview-top > span:first-child {
-  background: var(--raised);
-  border: 1px solid var(--dark-line);
-  padding: 7px 8px;
-}
+
 .live-dot {
   margin-right: 6px;
 }
-.terrain-preview-top > span:last-child {
-  padding-top: 7px;
-}
-.preview-caption {
-  position: absolute;
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-.preview-caption > span {
-  font: 11px var(--mono);
-  color: var(--on-dark);
-  text-shadow: 0 1px 3px var(--dark-line);
-}
+
 .terrain-card-footer {
   display: flex;
   align-items: center;
@@ -556,7 +494,7 @@ h3 {
   padding: 0 23px;
   margin: 0 0 13px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.6;
 }
 .priority-list {
@@ -578,7 +516,7 @@ h3 {
 .finding-type {
   display: inline-block;
   padding: 3px 6px;
-  font: 9px var(--mono);
+  font: 11px/1.4 var(--mono);
   letter-spacing: 0.5px;
   border-radius: 2px;
 }
@@ -592,11 +530,11 @@ h3 {
 }
 .finding-card h3 {
   margin: 10px 0 8px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
 }
 .finding-card p {
-  font: 11px/1.7 var(--mono);
+  font: 13px/1.7 var(--mono);
   color: var(--muted);
   margin: 0;
 }
@@ -609,7 +547,7 @@ h3 {
   justify-content: space-between;
   align-items: center;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
   margin-top: 12px;
 }
 .priority-card > .text-button {
@@ -644,14 +582,14 @@ h3 {
 }
 .survey-register strong {
   display: block;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--ink);
   font-weight: 500;
 }
 .survey-register small {
   display: block;
   color: var(--muted);
-  font: 10px var(--mono);
+  font: 12px/1.5 var(--mono);
   margin-top: 5px;
 }
 .survey-register > button > svg {
@@ -664,17 +602,22 @@ h3 {
   gap: 20px;
   border-top: 1px solid var(--line);
   margin-top: 25px;
-  padding: 19px 0;
+  padding: 24px 0;
+}
+.survey-summary > div {
+  min-width: 0;
 }
 .survey-summary span {
   display: block;
   color: var(--muted);
-  font-size: 10px;
-  margin-bottom: 7px;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 8px;
 }
 .survey-summary strong {
-  font: 11px var(--mono);
-  color: var(--muted);
+  display: block;
+  font: 500 16px/1.5 var(--mono);
+  color: var(--ink);
 }
 .workspace-footer {
   margin: 0 34px;
@@ -1367,15 +1310,7 @@ td select {
   display: grid;
   place-items: center;
 }
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: var(--overlay);
-  display: grid;
-  place-items: center;
-  z-index: 100;
-  padding: 25px;
-}
+
 .modal {
   position: relative;
   max-width: 620px;
@@ -1627,22 +1562,7 @@ td select {
   .terrain-preview {
     height: 300px;
   }
-  .terrain-preview-top {
-    left: 12px;
-    right: 12px;
-  }
-  .terrain-preview-top > span:last-child {
-    display: none;
-  }
-  .preview-caption {
-    left: 12px;
-    right: 12px;
-  }
-  .preview-caption > span {
-    max-width: 120px;
-    line-height: 1.6;
-    font-size: 10px;
-  }
+
   .panel-heading {
     padding: 18px;
   }
@@ -1664,7 +1584,7 @@ td select {
     gap: 22px;
   }
   .survey-summary strong {
-    font-size: 10px;
+    font-size: 15px;
   }
   .workspace-footer {
     margin: 0 16px;
@@ -1890,4 +1810,168 @@ button:disabled {
 }
 .review-status[data-status="Needs site verification"] {
   color: var(--accent);
+}
+
+/* Readable overview queue metadata without changing viewport tool density. */
+.priority-card .eyebrow {
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.priority-card > .text-button {
+  font-size: 14px;
+  padding: 12px 0;
+}
+.finding-top > .muted {
+  font-size: 12px;
+}
+.priority-card .panel-description {
+  font-size: 14px;
+}
+
+/* Overview model card: one header, an unobstructed scene, one readable legend. */
+.terrain-card .panel-heading {
+  padding: 22px 24px;
+  align-items: center;
+}
+.terrain-card .eyebrow {
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.terrain-card .panel-heading h2 {
+  font-size: 20px;
+  margin-top: 6px;
+}
+.terrain-subtitle {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 6px 0 0;
+}
+.terrain-card .button {
+  font-size: 14px;
+  padding: 12px 16px;
+}
+.terrain-card-footer {
+  display: block;
+  padding: 18px 24px;
+}
+.terrain-key {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.terrain-key > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+}
+.terrain-resolution {
+  color: var(--muted);
+  font-size: 12px;
+}
+.terrain-card-footer p {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+@media (max-width: 680px) {
+  .terrain-card .panel-heading {
+    padding: 18px;
+    flex-wrap: wrap;
+  }
+  .terrain-card-footer {
+    padding: 16px 18px;
+  }
+}
+
+/* Useful inspection context at the foot of the navigation. */
+.sidebar-summary {
+  border-top: 1px solid var(--dark-line);
+  padding: 20px 8px 0;
+}
+.sidebar-summary .eyebrow {
+  color: var(--dark-muted);
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.sidebar-summary h2 {
+  color: var(--on-dark);
+  font-size: 15px;
+  line-height: 1.45;
+  letter-spacing: 0;
+  margin: 10px 0 5px;
+}
+.sidebar-bottom .sidebar-site-id {
+  padding: 0;
+  margin: 0;
+  font-size: 11px;
+}
+.sidebar-summary dl {
+  margin: 16px 0 12px;
+}
+.sidebar-summary dl > div {
+  padding: 8px 0;
+  gap: 6px;
+  border-bottom: 1px solid var(--raised);
+}
+.sidebar-summary dt {
+  color: var(--dark-muted);
+  font-size: 12px;
+}
+.sidebar-summary dd {
+  color: var(--on-dark);
+  font-size: 12px;
+}
+.sidebar-bottom .sidebar-review-note {
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--dark-muted);
+}
+.sidebar-bottom .data-info {
+  font-size: 12px;
+  margin: 20px 8px 24px;
+}
+@media (min-width: 951px) and (max-height: 760px) {
+  .sidebar {
+    overflow-y: auto;
+  }
+  .sidebar-bottom {
+    padding-top: 20px;
+  }
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  flex-shrink: 0;
+}
+.brand-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+}
+@media (max-width: 680px) {
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+.modal {
+  border: 0;
+  color: var(--ink);
+  width: min(620px, calc(100vw - 40px));
+}
+.modal::backdrop {
+  background: var(--overlay);
 }

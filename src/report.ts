@@ -1,3 +1,4 @@
+import { fitReportImage } from "./reportImage";
 import { jsPDF } from "jspdf";
 import { site, number } from "./model";
 import type { Finding, SurveyKey } from "./model";
@@ -52,8 +53,8 @@ export function exportReport(
   if (image) {
     try {
       const dimensions = doc.getImageProperties(image),
-        height = Math.min(95, (176 * dimensions.height) / dimensions.width);
-      doc.addImage(image, "PNG", 16, y, 176, height);
+        { width, height } = fitReportImage(dimensions.width, dimensions.height);
+      doc.addImage(image, "PNG", 16 + (176 - width) / 2, y, width, height);
       y += height + 6;
     } catch {
       line("Scene image unavailable. Numerical evidence follows.");

@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, Suspense, lazy } from "react";
+import { useMemo, useState, useEffect, useRef, Suspense, lazy } from "react";
 import {
   Mountain,
   LayoutDashboard,
@@ -47,6 +47,7 @@ function readReviews(): Record<string, Review> {
   }
 }
 export default function App() {
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const [page, setPage] = useState<Page>("overview"),
     [survey, setSurvey] = useState<SurveyKey>("latest"),
     [layer, setLayer] = useState<"natural" | "change" | "depth">("natural"),
@@ -65,12 +66,24 @@ export default function App() {
     [notice, setNotice] = useState(""),
     [exporting, setExporting] = useState(false);
   useEffect(() => {
+    if (!info) return;
+    const previousFocus = document.activeElement;
+    const dialog = dialogRef.current;
+    dialog?.showModal();
+    return () => {
+      dialog?.close();
+      if (previousFocus instanceof HTMLElement) previousFocus.focus();
+    };
+  }, [info]);
+  useEffect(() => {
     if (page === "overview") {
       setSurvey("latest");
       setLayer("natural");
       setFocus(null);
       setSelected(null);
       setSection(null);
+      setSectionStart(null);
+      setTool("inspect");
       setView("perspective");
     }
   }, [page]);
@@ -90,6 +103,8 @@ export default function App() {
     setSurvey(value);
     setActiveFinding(null);
     setFocus(null);
+    setSectionStart(null);
+    setSection(null);
   };
   function openFinding(f: Finding) {
     setPage("explorer");
@@ -184,7 +199,7 @@ export default function App() {
           }}
         >
           <span className="brand-mark">
-            <Mountain size={25} />
+            <img src="/brand/strata-192.png" alt="" width="40" height="40" />
           </span>
           <span>
             STRATA<small>SPATIAL INSPECTION</small>
@@ -215,26 +230,45 @@ export default function App() {
           ))}
         </nav>
         <div className="sidebar-bottom">
-          <div className="local-status">
-            <span />
-            Local workspace
-          </div>
-          <p>
-            Survey analysis available
-            <br />
-            without an internet connection.
-          </p>
+          <section
+            className="sidebar-summary"
+            aria-label="Current inspection summary"
+          >
+            <span className="eyebrow">CURRENT INSPECTION</span>
+            <h2>{site.name}</h2>
+            <p className="sidebar-site-id">{site.id} · Open-pit operation</p>
+            <dl>
+              <div>
+                <dt>Survey {survey === "latest" ? "B" : "A"}</dt>
+                <dd>{date}</dd>
+              </div>
+              <div>
+                <dt>Findings</dt>
+                <dd>{findings.length}</dd>
+              </div>
+              <div>
+                <dt>Reviewed</dt>
+                <dd>
+                  {
+                    findings.filter((f) => reviews[f.id]?.status === "Reviewed")
+                      .length
+                  }{" "}
+                  / {findings.length}
+                </dd>
+              </div>
+            </dl>
+            <p className="sidebar-review-note">
+              {findings.length === 0
+                ? "No sampled exceedances in this survey."
+                : findings.every((f) => reviews[f.id]?.status === "Reviewed")
+                  ? "All findings marked reviewed."
+                  : "Open Findings to review the remaining evidence."}
+            </p>
+          </section>
           <button className="data-info" onClick={() => setInfo(true)}>
             <Info size={15} />
             Data & methodology
           </button>
-          <div className="inspector">
-            <span>SI</span>
-            <div>
-              Local inspection<small>Notes stored on this device</small>
-            </div>
-            <ShieldCheck size={17} />
-          </div>
         </div>
       </aside>
       <div className="workspace">
@@ -319,44 +353,39 @@ export default function App() {
               <section className="terrain-card">
                 <div className="panel-heading">
                   <div>
-                    <span className="eyebrow">TERRAIN / SURVEY B</span>
+                    <span className="eyebrow">TERRAIN OVERVIEW</span>
                     <h2>Excavation model</h2>
+                    <p className="terrain-subtitle">
+                      Survey B · 15 October 2026
+                    </p>
                   </div>
-                  <span className="small muted">3D site model</span>
+                  <button
+                    className="button primary"
+                    onClick={() => {
+                      setPage("explorer");
+                      setCurrentSurvey("latest");
+                      setLayer("natural");
+                      setSelected(null);
+                      setSection(null);
+                      setFocus(null);
+                      setReset((v) => v + 1);
+                    }}
+                  >
+                    Enter mine <ArrowUpRight size={17} />
+                  </button>
                 </div>
-                <div className="terrain-preview">
-                  {scene}
-                  <div className="terrain-preview-top">
-                    <span>
-                      <span className="live-dot" />
-                      SURVEY B / OCTOBER
-                    </span>
-                    <span>LOCAL GRID · METRES</span>
-                  </div>
-                  <div className="preview-caption">
-                    <span>Perspective view · 4 m surface grid</span>
-                    <button
-                      className="button light"
-                      onClick={() => {
-                        setPage("explorer");
-                        setFocus(null);
-                        setReset((v) => v + 1);
-                      }}
-                    >
-                      Enter mine <ArrowUpRight size={17} />
-                    </button>
-                  </div>
-                </div>
+                <div className="terrain-preview">{scene}</div>
                 <div className="terrain-card-footer">
-                  <span>
-                    <i className="legend-line" />
-                    Permitted footprint
-                  </span>
-                  <span>
-                    <i className="legend-dot" />
-                    Terraced excavation
-                  </span>
-                  <span>Drag to rotate · Scroll to zoom</span>
+                  <div className="terrain-key">
+                    <span>
+                      <i className="legend-line" />
+                      Permitted footprint
+                    </span>
+                    <span className="terrain-resolution">
+                      4 m surface grid · metres
+                    </span>
+                  </div>
+                  <p>Drag to rotate · Scroll to zoom</p>
                 </div>
               </section>
               <section className="priority-card">
@@ -908,7 +937,12 @@ export default function App() {
             <div className="report-grid">
               <section className="report-cover">
                 <div className="report-brand">
-                  <Mountain />
+                  <img
+                    src="/brand/strata-192.png"
+                    alt=""
+                    width="32"
+                    height="32"
+                  />
                   STRATA
                 </div>
                 <span className="eyebrow">SITE INSPECTION REPORT</span>
@@ -990,14 +1024,18 @@ export default function App() {
         </div>
       )}
       {info && (
-        <div className="modal-backdrop" onClick={() => setInfo(false)}>
-          <section
-            className="modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="method-title"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <dialog
+          ref={dialogRef}
+          className="modal"
+          onCancel={() => setInfo(false)}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setInfo(false);
+          }}
+
+          aria-modal="true"
+          aria-labelledby="method-title"
+        >
+          <div onClick={(e) => e.stopPropagation()}>
             <button
               className="modal-close"
               onClick={() => setInfo(false)}
@@ -1044,8 +1082,8 @@ export default function App() {
             <button className="button primary" onClick={() => setInfo(false)}>
               Back to workspace
             </button>
-          </section>
-        </div>
+          </div>
+        </dialog>
       )}
     </div>
   );
