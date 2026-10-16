@@ -2,17 +2,17 @@
 
 Decision: 16 October 2026. Laptop-first, offline application; no hosted service required.
 
-| Layer | Choice | Reason |
-|---|---|---|
-| UI | React 19 + TypeScript | Typed, component-based dashboard and inspection tools |
-| Development/build | Vite 7 | Local server and static production output |
-| 3D | Three.js + React Three Fiber 9 + Drei 10 | Local terrain geometry, camera controls, ray-based selection and overlays |
-| Styling | Custom responsive CSS | Consistent light inspection dashboard and dark analysis workspace |
-| Icons | Lucide React | Bundled, consistent icon set |
-| Analysis | Pure TypeScript | Testable grid interpolation, footprint/depth checks, connected finding groups and sections |
-| Reports | jsPDF | Offline PDF generation |
-| Local records | Browser localStorage | Persistent review notes/status without accounts or backend |
-| Verification | Vitest + production build + browser inspection | Numerical fixtures and actual interface checks |
+| Layer             | Choice                                         | Reason                                                                                     |
+| ----------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| UI                | React 19 + TypeScript                          | Typed, component-based dashboard and inspection tools                                      |
+| Development/build | Vite 7                                         | Local server and static production output                                                  |
+| 3D                | Three.js + React Three Fiber 9 + Drei 10       | Local terrain geometry, camera controls, ray-based selection and overlays                  |
+| Styling           | Custom responsive CSS                          | Consistent light inspection dashboard and dark analysis workspace                          |
+| Icons             | Lucide React                                   | Bundled, consistent icon set                                                               |
+| Analysis          | Pure TypeScript                                | Testable grid interpolation, footprint/depth checks, connected finding groups and sections |
+| Reports           | jsPDF                                          | Offline PDF generation                                                                     |
+| Local records     | Browser localStorage                           | Persistent review notes/status without accounts or backend                                 |
+| Verification      | Vitest + production build + browser inspection | Numerical fixtures and actual interface checks                                             |
 
 Exact installed versions are recorded in package-lock.json. React Three Fiber 9 is paired with React 19. No alpha renderer or paid map service is used.
 

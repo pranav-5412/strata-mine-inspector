@@ -1,0 +1,7 @@
+node_modules/
+dist/
+qa/
+package-lock.json
+*.tsbuildinfo
+public/
+docs/images/

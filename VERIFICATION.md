@@ -1,6 +1,7 @@
 # First working milestone — 16 October 2026
 
 Verified:
+
 - TypeScript check and production build.
 - Nine numerical tests: triangle interpolation, outside/missing coverage, grid edge, polygon boundary, untouched ground, known cut area/volume, tolerance, generated scenarios and profile endpoints.
 - Dependency audit after updating jsPDF/Vitest: zero reported vulnerabilities.
@@ -13,6 +14,7 @@ Verified:
 - Local production URL returned HTTP 200.
 
 Still pending before competition-ready signoff:
+
 - More realistic terrain detail and a geometrically validated connected access ramp.
 - Smooth focus camera transitions, more extensive input/error handling and keyboard accessibility review.
 - Repeat judging rehearsals, measured frame-rate testing and an actual disconnected-network rehearsal.
@@ -22,6 +24,7 @@ Still pending before competition-ready signoff:
 This record distinguishes a working first implementation from a finished competition submission.
 
 ## High-detail terrain update — 16 October 2026
+
 - Shared surface increased from 241 x 241 to 601 x 601 vertices: 4 m grid, 720,000 surface triangles.
 - All 11 numerical tests pass, including the ramp centreline continuity check.
 - Production build passes with the locally bundled rock texture.
