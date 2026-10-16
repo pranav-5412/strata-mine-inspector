@@ -1,5 +1,7 @@
 # Rock material asset
 
+The separate exterior soil/gravel texture is saved at `public/materials/mine-ground-v1.png`. Its online visual references, integration details and exact built-in generation prompt are recorded in [Exterior material](docs/EXTERIOR_MATERIAL.md). The original pit-rock asset below is retained.
+
 Saved project asset: `public/materials/weathered-rock-v1.png`.
 
 Generated using the built-in image-generation tool on 16 October 2026. This is an artificial material reference, not imagery of an actual mine. Used through metre-space triplanar mapping on the terrain; no network request is needed after loading the locally hosted app.

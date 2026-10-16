@@ -3,6 +3,7 @@ import * as THREE from "three";
 export function createRockMaterial(
   analytical = false,
   texture?: THREE.Texture,
+  exteriorTexture?: THREE.Texture,
 ) {
   const material = new THREE.MeshStandardMaterial({
     vertexColors: true,
@@ -11,18 +12,22 @@ export function createRockMaterial(
   });
   material.onBeforeCompile = (shader) => {
     shader.uniforms.rockAlbedo = { value: texture };
+    shader.uniforms.exteriorAlbedo = { value: exteriorTexture };
     shader.vertexShader = shader.vertexShader
       .replace(
         "#include <common>",
         `#include <common>
 varying vec3 vRockPosition;
-varying vec3 vRockNormal;`,
+varying vec3 vRockNormal;
+attribute float exteriorWeight;
+varying float vExteriorWeight;`,
       )
       .replace(
         "#include <begin_vertex>",
         `#include <begin_vertex>
 vRockPosition = position;
-vRockNormal = normal;`,
+vRockNormal = normal;
+vExteriorWeight = exteriorWeight;`,
       );
     shader.fragmentShader = shader.fragmentShader
       .replace(
@@ -31,6 +36,8 @@ vRockNormal = normal;`,
 varying vec3 vRockPosition;
 varying vec3 vRockNormal;
 uniform sampler2D rockAlbedo;
+uniform sampler2D exteriorAlbedo;
+varying float vExteriorWeight;
 float rockHash(vec3 p) { p=fract(p*0.1031);p+=dot(p,p.yzx+33.33);return fract((p.x+p.y)*p.z); }
 float rockNoise(vec3 p) {
 vec3 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);
@@ -42,6 +49,7 @@ float rockFbm(vec3 p){return rockNoise(p)*.55+rockNoise(p*2.03)*.27+rockNoise(p*
       .replace(
         "#include <color_fragment>",
         `#include <color_fragment>
+vec3 baseTint=diffuseColor.rgb;
 float coarse=rockFbm(vRockPosition*.045);
 float grain=rockNoise(vRockPosition*.85);
 float wall=1.0-smoothstep(.65,.95,abs(normalize(vRockNormal).y));
@@ -54,12 +62,21 @@ blendWeights/=max(dot(blendWeights,vec3(1.0)),.0001);
 vec3 rockCoords=vRockPosition*.055;
 vec3 rockSurface=texture2D(rockAlbedo,rockCoords.zy).rgb*blendWeights.x+texture2D(rockAlbedo,rockCoords.xz).rgb*blendWeights.y+texture2D(rockAlbedo,rockCoords.xy).rgb*blendWeights.z;
 diffuseColor.rgb*=mix(vec3(1.0),rockSurface*2.8,${analytical ? "0.1" : "(.12+wall*.73)"});
+// Two different scales/orientations suppress obvious repeats on large ground areas.
+vec2 groundUv=vRockPosition.xz/42.0;
+vec2 groundUvWide=mat2(.8,-.6,.6,.8)*vRockPosition.xz/113.0+vec2(.31,.67);
+vec3 groundSurface=mix(texture2D(exteriorAlbedo,groundUv).rgb,texture2D(exteriorAlbedo,groundUvWide).rgb,.28);
+float groundVariation=.88+rockFbm(vec3(vRockPosition.x*.003,0.0,vRockPosition.z*.003))*.24;
+float groundWeight=vExteriorWeight*${analytical ? "0.0" : "1.0"};
+diffuseColor.rgb=mix(diffuseColor.rgb,baseTint*groundSurface*3.2*groundVariation,groundWeight);
 `,
       )
       .replace(
         "#include <normal_fragment_maps>",
         `#include <normal_fragment_maps>
 float heightDetail=rockFbm(vRockPosition*.38)*.45+rockNoise(vRockPosition*1.4)*.07+dot(rockSurface,vec3(.2126,.7152,.0722))*.18;
+float groundHeight=rockNoise(vRockPosition*1.1)*.06+dot(groundSurface,vec3(.2126,.7152,.0722))*.18;
+heightDetail=mix(heightDetail,groundHeight,groundWeight);
 vec3 dpdx=dFdx(-vViewPosition),dpdy=dFdy(-vViewPosition);
 vec3 r1=cross(dpdy,normal),r2=cross(normal,dpdx);
 float determinant=dot(dpdx,r1);
@@ -68,6 +85,6 @@ normal=normalize(abs(determinant)*normal-gradient*${analytical ? "0.12" : "0.55"
 `,
       );
   };
-  material.customProgramCacheKey = () => `strata-rock-v3-${analytical}`;
+  material.customProgramCacheKey = () => `strata-rock-ground-v4-${analytical}`;
   return material;
 }

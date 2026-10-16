@@ -4,7 +4,7 @@ A laptop-first inspection website for reviewing mine excavation against a permit
 
 **Workflow:** overview → compare surveys → reveal a breach → inspect its depth and cross-section → record a decision → export evidence.
 
-![STRATA mine inspection workspace](docs/images/strata-inspection.png)
+![STRATA mine inspection workspace with separate exterior soil and gravel](docs/images/strata-exterior-ground.png)
 
 ## Project status
 

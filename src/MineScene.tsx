@@ -25,17 +25,23 @@ function Ground({
   layer,
   onPick,
 }: Pick<SceneProps, "survey" | "layer" | "onPick">) {
-  const texture = useTexture("materials/weathered-rock-v1.png");
+  const [texture, exteriorTexture] = useTexture([
+    "materials/weathered-rock-v1.png",
+    "materials/mine-ground-v1.png",
+  ]);
   useMemo(() => {
-    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = 8;
-    texture.needsUpdate = true;
-  }, [texture]);
+    for (const map of [texture, exteriorTexture]) {
+      map.wrapS = map.wrapT = THREE.RepeatWrapping;
+      map.colorSpace = THREE.SRGBColorSpace;
+      map.anisotropy = 8;
+      map.needsUpdate = true;
+    }
+  }, [texture, exteriorTexture]);
   const geometry = useMemo(() => {
     const grid = site[survey],
       pos = new Float32Array(grid.size * grid.size * 3),
       colors = new Float32Array(pos.length),
+      exterior = new Float32Array(grid.size * grid.size),
       indices = new Uint32Array((grid.size - 1) ** 2 * 6);
     for (let k = 0; k < grid.values.length; k++) {
       const p = gridPoint(grid, k);
@@ -58,7 +64,7 @@ function Ground({
     const normals = g.getAttribute("normal"),
       tan = new THREE.Color("#a39275"),
       gray = new THREE.Color("#77756c"),
-      dust = new THREE.Color("#a99a7c"),
+      dust = new THREE.Color(layer === "natural" ? "#a49b8b" : "#a99a7c"),
       green = new THREE.Color("#727555"),
       red = new THREE.Color("#d96042"),
       blue = new THREE.Color("#397b81"),
@@ -73,13 +79,19 @@ function Ground({
             Math.sin(p.z * 0.12 - p.x * 0.05)) *
           0.035;
       const band = (Math.sin(y * 0.14 + Math.sin(p.x * 0.006) * 0.8) + 1) * 0.5;
+      // Surface-material boundary, independent of the legal footprint. Retain
+      // the original rock on pit benches and the separate excavation breach.
+      const excavation = site.reference.values[k] - y;
+      exterior[k] =
+        THREE.MathUtils.smoothstep(r, 1.01, 1.065) *
+        (1 - THREE.MathUtils.smoothstep(excavation, 0.5, 3));
       color.copy(tan).lerp(gray, Math.min(0.8, band * 0.3 + slope * 0.7));
-      if (r > 1.02)
-        color
-          .copy(dust)
-          .lerp(green, Math.min(0.65, (r - 1) * 0.65))
-          .multiplyScalar(0.95 + noise);
-      else color.multiplyScalar(0.92 + noise + (y + 150) / 1600);
+      if (r > 1.02) {
+        color.copy(dust);
+        if (layer !== "natural")
+          color.lerp(green, Math.min(0.65, (r - 1) * 0.65));
+        color.multiplyScalar(0.95 + noise);
+      } else color.multiplyScalar(0.92 + noise + (y + 150) / 1600);
       if (layer === "depth")
         color
           .copy(blue)
@@ -100,11 +112,12 @@ function Ground({
       colors.set([color.r, color.g, color.b], k * 3);
     }
     g.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    g.setAttribute("exteriorWeight", new THREE.BufferAttribute(exterior, 1));
     return g;
   }, [survey, layer]);
   const material = useMemo(
-    () => createRockMaterial(layer !== "natural", texture),
-    [layer, texture],
+    () => createRockMaterial(layer !== "natural", texture, exteriorTexture),
+    [layer, texture, exteriorTexture],
   );
   useEffect(
     () => () => {

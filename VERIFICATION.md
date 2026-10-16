@@ -34,3 +34,12 @@ This record distinguishes a working first implementation from a finished competi
 - Geometric detail changed scenario measurements; the displayed values are recalculated, not copied from the coarse model.
 - New renderer includes shadows, triplanar rock texture, instanced scatter, site equipment and eased camera movement.
 - Full haul-road engineering validation and disconnected-network rehearsal remain pending.
+
+## Separate exterior material — 16 October 2026
+
+- Added generated mine-ground-v1.png for unexcavated surrounding soil and gravel; retained weathered-rock-v1.png on excavation surfaces.
+- Exterior blend follows pit radius and excavation depth independently of the permitted footprint.
+- Numerical model and terrain vertex positions are unchanged; all 11 tests pass.
+- Production build, formatting and whitespace checks pass.
+- Browser natural and survey-change material checks returned no shader warnings/errors; selected depth finding remains 21,200 m2 with 22.9 m exceedance.
+- Exterior texture is served locally with HTTP 200; references and exact generation prompt are documented in docs/EXTERIOR_MATERIAL.md.
